@@ -1,101 +1,76 @@
-# AWS Capstone Project – Van Gogh Gallery
+# Cloud Infrastructure Lab – WordPress Deployment on AWS
 
 ## Overview
 
-This project deploys a highly available and scalable WordPress infrastructure on AWS using Terraform (Infrastructure as Code).
+This project demonstrates the deployment of a highly available WordPress application on AWS using Terraform (Infrastructure as Code).
 
-The application, **Van Gogh Gallery**, runs in a secure multi-tier architecture across two Availability Zones in `us-west-2`.
+The goal was to design and provision a structured multi-tier architecture including networking, compute, database, and security components.
 
-This implementation satisfies the **Expert Level** Capstone requirements and includes additional production-ready enhancements.
+The project was implemented as part of an AWS Cloud Computing Bootcamp.
 
 ---
 
 ## Architecture
 
-![Architecture Diagram](diagram/architecture-v01.png)
-
-### Network
-- VPC: `10.0.0.0/16`
-- 2 Public Subnets (ALB, Bastion, NAT)
-- 2 Private Subnets (WordPress, RDS)
-- Multi-AZ deployment (us-west-2a, us-west-2b)
-
-### Traffic Flow
+The application is deployed across two Availability Zones in a multi-tier setup:
 
 Internet  
-→ CloudFront  
 → Application Load Balancer  
-→ Auto Scaling Group (WordPress – Private Subnets)  
-→ Amazon RDS MySQL  
+→ Auto Scaling Group (EC2 – Private Subnets)  
+→ Amazon RDS (MySQL)
+
+### Network Design
+- Custom VPC (10.0.0.0/16)
+- Public Subnets (ALB, Bastion, NAT)
+- Private Subnets (EC2, RDS)
+- NAT Gateway for outbound traffic
+- No public IPs for application servers
 
 ---
 
-## Core Components
+## Implemented Components
 
 ### Compute
 - Application Load Balancer
 - Auto Scaling Group (min 2, max 3)
-- Launch Template with automated WordPress setup
-- Bastion Host for secure SSH access
+- Launch Template with automated WordPress installation
+- Bastion Host for administrative access
 
 ### Database
 - Amazon RDS MySQL 8.x
-- db.t3.micro
-- Private subnets only
+- Deployed in private subnets
+- Security group restricted access
 
 ### Storage
-- Amazon EFS (shared `wp-content`)
-- Amazon S3 (prepared for media/backup/CDN origin)
+- Amazon EFS (shared wp-content directory)
+- Amazon S3 (prepared for backups/static assets)
 
 ### Security
-- Private EC2 instances (no public IP)
-- Security Groups with least privilege
-- NAT Gateway for outbound traffic
-- AWS WAF attached to ALB
+- Security Groups (least privilege principle)
+- Private EC2 instances
+- IAM roles for service permissions
+- Optional WAF integration
 
-### Email & Monitoring
-- Amazon SES for email sending
-- CloudWatch for metrics and scaling policies
+### Monitoring
+- CloudWatch metrics
+- Basic scaling policies
 
 ---
 
 ## Infrastructure as Code
 
-All resources are defined using Terraform:
+All infrastructure components are provisioned using Terraform:
 
 - VPC, Subnets, Route Tables
-- ALB and Target Groups
+- ALB & Target Groups
 - Auto Scaling Group
-- RDS and DB Subnet Group
+- RDS
 - EFS
 - S3
-- SES
-- WAF
-- IAM Roles and Security Groups
+- IAM Roles
+- Security Groups
 
 Remote state managed via Terraform Cloud.
-
----
-
-## Capstone Level
-
-Expert Level requirements completed:
-
-- Multi-AZ architecture
-- Private WordPress instances
-- Bastion Host
-- NAT Gateway
-- Application Load Balancer
-- Auto Scaling Group
-- RDS in private subnets
-
-Additional enhancements:
-
-- EFS shared storage
-- SES integration
-- CloudFront CDN
-- WAF protection
-- S3 bucket
 
 ---
 
