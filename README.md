@@ -11,13 +11,8 @@ The project was implemented as part of an AWS Cloud Computing Bootcamp.
 ---
 
 ## Architecture
+![Architecture Diagram](diagram/architecture-v01.png)
 
-The application is deployed across two Availability Zones in a multi-tier setup:
-
-Internet  
-→ Application Load Balancer  
-→ Auto Scaling Group (EC2 – Private Subnets)  
-→ Amazon RDS (MySQL)
 
 ### Network Design
 - Custom VPC (10.0.0.0/16)
